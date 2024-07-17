@@ -1,0 +1,17 @@
+---
+# tasks file for routers
+#
+- hosts: routers
+  gather_facts: no
+  tasks:
+  - name: Include system config
+    import_tasks: system.yml
+
+  - name: Include interfaces
+    import_tasks: interfaces.yml
+
+  - name: Include routing
+    import_tasks: routing.yml
+    
+  - name: Include nat
+    import_tasks: nat.yml

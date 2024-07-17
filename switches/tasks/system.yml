@@ -1,0 +1,21 @@
+---
+- name: Set hostname
+  routeros_command:
+    commands:
+      - /system identity set name="{{ inventory_hostname }}"
+
+- name: Update login banner
+  routeros_command:
+    commands:
+        - /system note set show-at-login=yes
+        - >
+          /system note set note="\
+          \n    ------------------------------------\
+          \n    |\
+          \n    | You have entered a SECRET switch\
+          \n    |\
+          \n    ------------------------------------\
+          \n    |\
+          \n    | It is called {{ inventory_hostname }}\
+          \n    |\
+          \n    ------------------------------------"

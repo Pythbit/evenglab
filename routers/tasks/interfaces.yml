@@ -1,0 +1,22 @@
+---
+- name: Create Loopbacks
+  routeros_command:
+    commands:
+      - /interface bridge add name="{{ item.routeros_if }}" comment="{{ item.desc }}"
+  when:
+    - item.routeros_if is match('loopback0')
+  loop: "{{ interfaces }}"
+
+- name: Configure descriptions
+  routeros_command:
+    commands:
+      - /interface set comment="{{ item.desc }}" [find where name="{{ item.routeros_if }}"]
+  loop: "{{ interfaces }}"
+
+- name: Configure addressing
+  routeros_command:
+    commands:
+      - /ip address add interface="{{ item.routeros_if }}" address="{{ item.ipv4 }}"
+  when:
+    - item.ipv4 is defined
+  loop: "{{ interfaces }}"

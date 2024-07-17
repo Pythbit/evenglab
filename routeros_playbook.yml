@@ -1,0 +1,10 @@
+---
+# General RouterOS playbook
+#
+- hosts: routeros
+  gather_facts: no
+  tasks:
+  - import_role:
+      name: routers
+  - import_role:
+      name: switches

@@ -1,0 +1,22 @@
+---
+- name: Configure descriptions
+  routeros_command:
+    commands:
+      - /interface set comment="{{ item.desc }}" [find where name="{{ item.routeros_if }}"]
+  loop: "{{ interfaces }}"
+
+- name: Configure addressing
+  routeros_command:
+    commands:
+      - /ip address add interface="{{ item.routeros_if }}" address="{{ item.ipv4 }}"
+  when:
+    - item.ipv4 is defined
+  loop: "{{ interfaces }}"
+
+- name: Configure PVIDs
+  routeros_command:
+    commands:
+      - /interface bridge port add bridge=bridge1 interface="{{ item.routeros_if }}" pvid="{{ item.pvid }}"
+      - /interface bridge port set [find where interface="{{ item.routeros_if }}"] pvid="{{ item.pvid }}"
+  when: item.pvid is defined
+  loop: "{{ interfaces }}"

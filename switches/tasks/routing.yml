@@ -1,0 +1,11 @@
+---
+- name: Configure Default Route
+  routeros_command:
+    commands:
+      - /ip route remove [find where gateway="{{ item.gateway }}"]
+      - /ip route add gateway="{{ item.gateway }}"
+  when: 
+    - item.network is not defined
+    - item.gateway is defined
+    - item.type is match('static')
+  loop: "{{ routes }}"

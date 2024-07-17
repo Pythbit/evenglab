@@ -1,0 +1,12 @@
+[routeros]
+
+[routeros:children]
+routers
+switches
+
+[routers]
+ROS-RT-01 ansible_host=10.1.254.1
+
+[switches]
+ROS-SW-01 ansible_host=10.1.2.1
+ROS-SW-02 ansible_host=10.1.2.3

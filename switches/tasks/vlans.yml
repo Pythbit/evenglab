@@ -1,0 +1,56 @@
+---
+# Configure VLANs and SVIs where needed
+#
+- name: Create bridge
+  routeros_command:
+    commands:
+      - /interface bridge add name=bridge1
+
+- name: Configure VLANs
+  routeros_command:
+    commands:
+      - /interface bridge vlan add bridge=bridge1 tagged=bridge1 vlan-ids="{{ item.vid }}"
+  when: 
+    - item.name is defined
+  loop: "{{ vlans }}"
+
+- name: Set tagged ports
+  routeros_command:
+    commands:
+      - /interface bridge vlan add bridge=bridge1 tagged="{{ item.port }}" vlan-ids="{{ item.vlans }}"
+  when: item.port is defined
+  loop: "{{ tagged }}"
+
+- name: Set untagged ports
+  routeros_command:
+    commands:
+      - /interface bridge vlan add bridge=bridge1 untagged="{{ item.port }}" vlan-ids="{{ item.vlans }}"
+  when: item.port is defined
+  loop: "{{ untagged }}"
+
+- name: Configure SVI Interface
+  routeros_command:
+    commands:
+      - /interface vlan add interface=bridge1 name="{{ item.name }}" vlan-id="{{ item.vlan }}"
+  when: item.name is defined
+  loop: "{{ svis }}"
+
+- name: Update SVI VLAN
+  routeros_command:
+    commands:
+      - /interface vlan set [find where name="{{ item.name }}"] set vlan-id="{{ item.vlan }}"
+  when: item.name is defined
+  loop: "{{ svis }}"
+
+- name: Configure addressing
+  routeros_command:
+    commands:
+      - /ip address add interface="{{ item.name }}" address="{{ item.ipv4 }}"
+  when:
+    - item.ipv4 is defined
+  loop: "{{ svis }}"
+
+- name: Enable VLAN filtering
+  routeros_command:
+    commands:
+      - /interface bridge set [find where name=bridge1] vlan-filtering=yes

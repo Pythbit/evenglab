@@ -1,0 +1,47 @@
+dhcp_pools:
+  - routeros_pool: "clients-pool"
+    srv_name: "clients-dhcp"
+    interface: "Clients"
+    scope: "10.1.1.0/24"
+    range: "10.1.1.10-10.1.1.254"
+    dns: "1.1.1.1"
+    gateway: "10.1.1.1"
+
+interfaces:
+  - routeros_if: "ether1"
+    desc: "Uplink"
+    ipv4: "10.1.254.2/24"
+  - routeros_if: "ether2"
+    desc: "ansible server"
+    pvid: "10"
+  - routeros_if: "ether3"
+    desc: "TEST-SW-02"
+    pvid: "99"
+
+routes:
+  - gateway: "10.1.254.1"
+    type: static
+
+svis:
+  - name: "Clients"
+    vlan: "10"
+    ipv4: "10.1.1.1/24"
+  - name: "Management"
+    vlan: "20"
+    ipv4: "10.1.2.1/24"
+
+vlans:
+ - name: "Clients"
+   vid: "10"
+ - name: "Management"
+   vid: "20"
+ - name: "Blackhole"
+   vid: "99"
+
+untagged:
+  - port: "ether2"
+    vlans: "10"
+
+tagged:
+  - port: "ether3"
+    vlans: "10,20"

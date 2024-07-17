@@ -1,0 +1,11 @@
+---
+- name: Configure Static Routes
+  routeros_command:
+    commands:
+      - /ip route remove [find where dst-address="{{ item.network }}"]
+      - /ip route add dst-address="{{ item.network }}" gateway="{{ item.gateway }}"
+  when: 
+    - item.network is defined
+    - item.gateway is defined
+    - item.type is match('static')
+  loop: "{{ routes }}"

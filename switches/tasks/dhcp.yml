@@ -1,0 +1,9 @@
+---
+- name: Configure DHCP
+  routeros_command:
+    commands:
+      - /ip pool add name="{{ item.routeros_pool }}" ranges="{{ item.range }}"
+      - /ip dhcp-server add address-pool="{{ item.routeros_pool }}" interface="{{ item.interface }}" lease-time=1d name="{{ item.srv_name }}"
+      - /ip dhcp-server network add address="{{ item.scope }}" dns-server="{{ item.dns }}" gateway="{{ item.gateway }}"
+  when: item.routeros_pool is defined
+  loop: "{{ dhcp_pools }}"
